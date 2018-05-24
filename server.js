@@ -135,7 +135,7 @@ wuziqi.on('connection', function (socket) {
                     wuziqi.in(id).emit('error', '对方断开了链接');
                     return;
                 }
-                wuziqi.in(id).emit('msg', ["目前观战人数："+(wuziqi.adapter.rooms[id].length-2), 0]);
+                wuziqi.in(id).emit('msg', ["目前观战人数："+(wuziqi.adapter.rooms[id].length-3), 0]);
                 return;
             }
             wuziqi.in(id).emit('error', '对方断开了链接');
