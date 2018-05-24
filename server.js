@@ -49,10 +49,18 @@ wuziqi.on('connection', function (socket) {
             temp.leave('waiting');
             temp.join(rand);
 
-            console.log('Match '+rand);
+            console.log('Match '+rand+": "+temp.id+" with "+socket.id);
 
             temp.emit('start', 1, rand);
             socket.emit('start', 2, rand);
+            console.log("R"+id+" start!");
+            
+            room.first = temp.id;
+            room.second = socket.id;
+            room.board = [];
+            for (var i=0;i<169;i++) room.board.push(0);
+            room.pos = [];
+
             return;
         }
 
@@ -69,6 +77,7 @@ wuziqi.on('connection', function (socket) {
         // console.log(room);
         if (isset(room) && (room.length >= 2 || isset(room.first) || isset(room.second))) {
             // wuziqi.in(socket.id).emit('error', '房间已满');
+            console.log("R"+id+" visitor: "+socket.id);
             socket.join(id);
             socket.emit('start', -1, id, room.board.join(""), room.pos);
             wuziqi.in(id).emit('msg', ["目前观战人数："+(room.length-2), 0]);
@@ -79,10 +88,12 @@ wuziqi.on('connection', function (socket) {
             first = wuziqi.connected[Object.keys(room.sockets)[0]];
         }
         socket.join(id);
+        console.log("R"+id+" player: "+socket.id);
         if (isset(first)) {
             room = wuziqi.adapter.rooms[id];
             first.emit('start', 1, id);
             socket.emit('start', 2, id);
+            console.log("R"+id+" start!");
             room.first = first.id;
             room.second = socket.id;
             room.board = [];
@@ -100,6 +111,7 @@ wuziqi.on('connection', function (socket) {
         }
         if (!isset(room.count)) room.count = 0;
         room.count++;
+        console.log("R"+id+" ready: "+socket.id);
         // console.log(room);
         if (room.count == 2) {
             delete room.count;
@@ -112,7 +124,7 @@ wuziqi.on('connection', function (socket) {
     })
 
     socket.on('put', function (id, data) {
-        console.log(id+":"+data);
+        console.log("R"+id+": "+data);
         wuziqi.in(id).emit('put', data);
 
         var room = wuziqi.adapter.rooms[id];
@@ -124,7 +136,7 @@ wuziqi.on('connection', function (socket) {
     })
 
     socket.on('msg', function (id, data) {
-        console.log(id+": "+data);
+        console.log("R"+id+": "+data);
         wuziqi.in(id).emit('msg', data);
     })
 
@@ -132,6 +144,7 @@ wuziqi.on('connection', function (socket) {
         Object.keys(socket.rooms).forEach(function (id) {
             // wuziqi.in(id).emit('error', '对方断开了链接');
             var room = wuziqi.adapter.rooms[id];
+            console.log("R"+id+" disconnect: "+socket.id);
             if (isset(room) && isset(room.first) && isset(room.second)) {
                 if (room.first==socket.id || room.second==socket.id) {
                     wuziqi.in(id).emit('error', '对方断开了连接');
@@ -140,7 +153,7 @@ wuziqi.on('connection', function (socket) {
                 wuziqi.in(id).emit('msg', ["目前观战人数："+(wuziqi.adapter.rooms[id].length-3), 0]);
                 return;
             }
-            wuziqi.in(id).emit('error', '对方断开了链接');
+            wuziqi.in(id).emit('error', '对方断开了连接');
         });
     })
 });
