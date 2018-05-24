@@ -67,7 +67,7 @@ wuziqi.on('connection', function (socket) {
         }
         var room = wuziqi.adapter.rooms[id];
         // console.log(room);
-        if (isset(room) && room.length >= 2) {
+        if (isset(room) && (room.length >= 2 || isset(room.first) || isset(room.second))) {
             // wuziqi.in(socket.id).emit('error', '房间已满');
             socket.join(id);
             socket.emit('start', -1, id, room.board, room.pos);
@@ -114,6 +114,7 @@ wuziqi.on('connection', function (socket) {
         wuziqi.in(id).emit('put', data);
 
         var room = wuziqi.adapter.rooms[id];
+        if (!isset(room) && !isset(room.board)) return;
         var x = data[0], y = data[1];
         room.board[13*x+y] = data[2];
         room.pos = [x,y];
@@ -132,8 +133,6 @@ wuziqi.on('connection', function (socket) {
             if (isset(room) && isset(room.first) && isset(room.second)) {
                 if (room.first==socket.id || room.second==socket.id) {
                     wuziqi.in(id).emit('error', '对方断开了链接');
-                    delete room.first;
-                    delete room.second;
                     return;
                 }
                 wuziqi.in(id).emit('msg', ["目前观战人数："+(wuziqi.adapter.rooms[id].length-2), 0]);
