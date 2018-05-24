@@ -129,7 +129,7 @@ wuziqi.on('connection', function (socket) {
         Object.keys(socket.rooms).forEach(function (id) {
             // wuziqi.in(id).emit('error', '对方断开了链接');
             var room = wuziqi.adapter.rooms[id];
-            if (isset(room.first) && isset(room.second)) {
+            if (isset(room) && isset(room.first) && isset(room.second)) {
                 if (room.first==socket.id || room.second==socket.id) {
                     wuziqi.in(id).emit('error', '对方断开了链接');
                     delete room.first;
