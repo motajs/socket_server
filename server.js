@@ -53,7 +53,7 @@ wuziqi.on('connection', function (socket) {
 
             temp.emit('start', 1, rand);
             socket.emit('start', 2, rand);
-            console.log("R"+id+" start!");
+            console.log("R"+rand+" start!");
             
             room.first = temp.id;
             room.second = socket.id;
