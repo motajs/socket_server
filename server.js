@@ -49,6 +49,8 @@ wuziqi.on('connection', function (socket) {
             temp.leave('waiting');
             temp.join(rand);
 
+            console.log('Match '+rand);
+
             temp.emit('start', 1, rand);
             socket.emit('start', 2, rand);
             return;
@@ -78,7 +80,7 @@ wuziqi.on('connection', function (socket) {
             first.emit('start', 1, id);
             socket.emit('start', 2, id);
         }
-        // console.log(wuziqi.adapter.rooms[id].sockets);
+        console.log(wuziqi.adapter.rooms[id].sockets);
     });
 
     socket.on('ready', function (id) {
@@ -97,7 +99,7 @@ wuziqi.on('connection', function (socket) {
     })
 
     socket.on('put', function (id, data) {
-        //console.log(data);
+        console.log(id+":"+data);
         wuziqi.in(id).emit('put', data);
     })
 
