@@ -103,6 +103,10 @@ wuziqi.on('connection', function (socket) {
         wuziqi.in(id).emit('put', data);
     })
 
+    socket.on('msg', function (id, data) {
+        wuziqi.in(id).emit('msg', data);
+    })
+
     socket.on('disconnecting', function () {
         Object.keys(socket.rooms).forEach(function (id) {
             wuziqi.in(id).emit('error', '对方断开了链接');
