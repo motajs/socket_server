@@ -17,7 +17,7 @@ else {
 var io = socketIO(server);
 
 server.listen(5050, function () {
-    console.log('Starting server on port 5050');
+    console.log(getTime()+'Starting server on port 5050');
 });
 
 var isset = function (t) {
@@ -26,12 +26,21 @@ var isset = function (t) {
     return true;
 }
 
+var getTime = function() {
+    var date = new Date();
+    var setTwoDigits = function(x) {return parseInt(x)<10?("0"+x):x;}
+    return "[" + 
+    date.getFullYear()+"-"+setTwoDigits(date.getMonth()+1)+"-"+setTwoDigits(date.getDate())+" "
+    +setTwoDigits(date.getHours())+":"+setTwoDigits(date.getMinutes())+":"+setTwoDigits(date.getSeconds())+
+    "] "
+}
+
 const wuziqi = io.of('/wuziqi');
 wuziqi.on('connection', function (socket) {
 
     var wait = function (socket) {
         if (!isset(wuziqi.adapter.rooms['waiting'])) {
-            console.log('Waiting '+socket.id);
+            console.log(getTime()+'Waiting '+socket.id);
             socket.join('waiting');
             return;
         }
@@ -50,11 +59,11 @@ wuziqi.on('connection', function (socket) {
             temp.leave('waiting');
             temp.join(rand);
 
-            console.log('Match '+rand+": "+temp.id+" with "+socket.id);
+            console.log(getTime()+'Match '+rand+": "+temp.id+" with "+socket.id);
 
             temp.emit('start', 1, rand);
             socket.emit('start', 2, rand);
-            console.log(rand+" start!");
+            console.log(getTime()+rand+" start!");
 
             var curr = wuziqi.adapter.rooms[rand];
             
@@ -72,15 +81,13 @@ wuziqi.on('connection', function (socket) {
 
     socket.on('join', function (id) {
         if (id == 0) {
-            // wuziqi.in(socket.id).emit('error', '房间号不合法');
             wait(socket);
             return;
         }
         var room = wuziqi.adapter.rooms[id];
-        // console.log(room);
         if (isset(room) && (room.length >= 2 || isset(room.first) || isset(room.second))) {
             // wuziqi.in(socket.id).emit('error', '房间已满');
-            console.log(id+" visitor: "+socket.id);
+            console.log(getTime()+id+" visitor: "+socket.id);
             socket.join(id);
             socket.emit('start', -1, id, room.board.join(""), room.pos);
             wuziqi.in(id).emit('msg', ["目前观战人数："+(room.length-2), 0]);
@@ -91,12 +98,12 @@ wuziqi.on('connection', function (socket) {
             first = wuziqi.connected[Object.keys(room.sockets)[0]];
         }
         socket.join(id);
-        console.log(id+" player: "+socket.id);
+        console.log(getTime()+id+" player: "+socket.id);
         if (isset(first)) {
             room = wuziqi.adapter.rooms[id];
             first.emit('start', 1, id);
             socket.emit('start', 2, id);
-            console.log(id+" start!");
+            console.log(getTime()+id+" start!");
             room.first = first.id;
             room.second = socket.id;
             room.board = [];
@@ -113,8 +120,7 @@ wuziqi.on('connection', function (socket) {
         }
         if (!isset(room.count)) room.count = 0;
         room.count++;
-        console.log(id+" ready: "+socket.id);
-        // console.log(room);
+        console.log(getTime()+id+" ready: "+socket.id);
         if (room.count == 2) {
             delete room.count;
             wuziqi.in(id).emit('ready');
@@ -126,7 +132,7 @@ wuziqi.on('connection', function (socket) {
     })
 
     socket.on('put', function (id, data) {
-        console.log(id+": "+data);
+        console.log(getTime()+id+": "+data);
         wuziqi.in(id).emit('put', data);
 
         var room = wuziqi.adapter.rooms[id];
@@ -138,7 +144,7 @@ wuziqi.on('connection', function (socket) {
     })
 
     socket.on('msg', function (id, data) {
-        console.log(id+": "+data);
+        console.log(getTime()+id+": "+data);
         wuziqi.in(id).emit('msg', data);
     })
 
@@ -147,7 +153,7 @@ wuziqi.on('connection', function (socket) {
             // wuziqi.in(id).emit('error', '对方断开了链接');
             var room = wuziqi.adapter.rooms[id];
             if (id!=socket.id)
-                console.log(id+" disconnect: "+socket.id);
+                console.log(getTime()+id+" disconnect: "+socket.id);
             if (isset(room) && isset(room.first) && isset(room.second)) {
                 if (room.first==socket.id || room.second==socket.id) {
                     wuziqi.in(id).emit('error', '对方断开了连接');
