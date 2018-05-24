@@ -85,12 +85,12 @@ wuziqi.on('connection', function (socket) {
             return;
         }
         var room = wuziqi.adapter.rooms[id];
-        if (isset(room) && (room.length >= 2 || isset(room.first) || isset(room.second))) {
+        if (isset(room) && room.length >= 2) {
             // wuziqi.in(socket.id).emit('error', '房间已满');
             console.log(getTime()+id+" visitor: "+socket.id);
             socket.join(id);
-            socket.emit('start', -1, id, room.board.join(""), room.pos);
             wuziqi.in(id).emit('msg', ["目前观战人数："+(room.length-2), 0]);
+            socket.emit('start', -1, id, room.board.join(""), room.pos);
             return;
         }
         var first = null;
