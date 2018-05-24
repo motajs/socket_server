@@ -53,13 +53,15 @@ wuziqi.on('connection', function (socket) {
 
             temp.emit('start', 1, rand);
             socket.emit('start', 2, rand);
-            console.log("R"+rand+" start!");
+            console.log(rand+" start!");
+
+            var curr = wuziqi.adapter.rooms[rand];
             
-            room.first = temp.id;
-            room.second = socket.id;
-            room.board = [];
-            for (var i=0;i<169;i++) room.board.push(0);
-            room.pos = [];
+            curr.first = temp.id;
+            curr.second = socket.id;
+            curr.board = [];
+            for (var i=0;i<169;i++) curr.board.push(0);
+            curr.pos = [];
 
             return;
         }
