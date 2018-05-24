@@ -104,6 +104,7 @@ wuziqi.on('connection', function (socket) {
     })
 
     socket.on('msg', function (id, data) {
+        console.log(id+": "+data);
         wuziqi.in(id).emit('msg', data);
     })
 
