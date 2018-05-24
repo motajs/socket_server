@@ -70,7 +70,7 @@ wuziqi.on('connection', function (socket) {
         if (isset(room) && (room.length >= 2 || isset(room.first) || isset(room.second))) {
             // wuziqi.in(socket.id).emit('error', '房间已满');
             socket.join(id);
-            socket.emit('start', -1, id, room.board, room.pos);
+            socket.emit('start', -1, id, room.board.join(""), room.pos);
             wuziqi.in(id).emit('msg', ["目前观战人数："+(room.length-2), 0]);
             return;
         }
@@ -86,6 +86,7 @@ wuziqi.on('connection', function (socket) {
             room.first = first.id;
             room.second = socket.id;
             room.board = [];
+            for (var i=0;i<169;i++) room.board.push(0);
             room.pos = [];
         }
         console.log(wuziqi.adapter.rooms[id].sockets);
@@ -104,6 +105,7 @@ wuziqi.on('connection', function (socket) {
             delete room.count;
             wuziqi.in(id).emit('ready');
             room.board = [];
+            for (var i=0;i<169;i++) room.board.push(0);
             room.pos = [];
             wuziqi.in(id).emit('board', room.board, room.pos);
         }
@@ -118,7 +120,7 @@ wuziqi.on('connection', function (socket) {
         var x = data[0], y = data[1];
         room.board[13*x+y] = data[2];
         room.pos = [x,y];
-        wuziqi.in(id).emit('board', room.board, room.pos);
+        wuziqi.in(id).emit('board', room.board.join(""), room.pos);
     })
 
     socket.on('msg', function (id, data) {
