@@ -173,7 +173,7 @@ pencil.on('connection', function (socket) {
 
     var wait = function (socket, data) { // data [xsize,ysize,playerId]
         if (!isset(pencil.adapter.rooms['waiting'])) {
-            printlog(getTime()+'Waiting '+socket.id);
+            console.log(getTime()+'Waiting '+socket.id);
             socket.join('waiting');
             pencil.adapter.rooms['waiting'].data=data
             return;
@@ -193,13 +193,13 @@ pencil.on('connection', function (socket) {
             temp.leave('waiting');
             temp.join(rand);
 
-            printlog(getTime()+'Match '+rand+": "+temp.id+" with "+socket.id);
+            console.log(getTime()+'Match '+rand+": "+temp.id+" with "+socket.id);
 
             data=room.data
             temp.emit('start', data, rand);
             var data2=[data[0],data[1],1-data[2]];
             socket.emit('start', data2, rand);
-            printlog(getTime()+rand+" start!");
+            console.log(getTime()+rand+" start!");
 
             var curr = pencil.adapter.rooms[rand];
             
@@ -223,7 +223,7 @@ pencil.on('connection', function (socket) {
             //zzzzz bug in h5 pencil
             pencil.in(socket.id).emit('error', '房间已满');
             return;
-            printlog(getTime()+id+" visitor: "+socket.id);
+            console.log(getTime()+id+" visitor: "+socket.id);
             socket.join(id);
             pencil.in(id).emit('msg', ["目前观战人数："+(room.length-2), 2]);
             data=room.data
@@ -240,14 +240,14 @@ pencil.on('connection', function (socket) {
         if (!isset(room)){
             pencil.adapter.rooms[id].data=data
         }
-        printlog(getTime()+id+" player: "+socket.id);
+        console.log(getTime()+id+" player: "+socket.id);
         if (isset(first)) {
             room = pencil.adapter.rooms[id];
             data=room.data
             first.emit('start', data, id);
             var data2=[data[0],data[1],1-data[2]];
             socket.emit('start', data2, id);
-            printlog(getTime()+id+" start!");
+            console.log(getTime()+id+" start!");
             room.first = first.id;
             room.second = socket.id;
             room.board = [];
@@ -262,7 +262,7 @@ pencil.on('connection', function (socket) {
         }
         if (!isset(room.count)) room.count = 0;
         room.count++;
-        printlog(getTime()+id+" ready: "+socket.id);
+        console.log(getTime()+id+" ready: "+socket.id);
         if (room.count == 2) {
             delete room.count;
             pencil.in(id).emit('ready');
@@ -273,7 +273,7 @@ pencil.on('connection', function (socket) {
     })
 
     socket.on('put', function (id, data) {
-        printlog(getTime()+id+": "+data);
+        console.log(getTime()+id+": "+data);
         pencil.in(id).emit('put', data);
 
         var room = pencil.adapter.rooms[id];
@@ -284,7 +284,7 @@ pencil.on('connection', function (socket) {
     })
 
     socket.on('msg', function (id, data) {
-        printlog(getTime()+id+": "+data);
+        console.log(getTime()+id+": "+data);
         pencil.in(id).emit('msg', data);
     })
 
@@ -293,7 +293,7 @@ pencil.on('connection', function (socket) {
             // pencil.in(id).emit('error', '对方断开了链接');
             var room = pencil.adapter.rooms[id];
             if (id!=socket.id)
-                printlog(getTime()+id+" disconnect: "+socket.id);
+                console.log(getTime()+id+" disconnect: "+socket.id);
             if (isset(room) && isset(room.first) && isset(room.second)) {
                 if (room.first==socket.id || room.second==socket.id) {
                     pencil.in(id).emit('error', '对方断开了连接');
