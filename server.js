@@ -37,3 +37,5 @@ var getTime = function() {
 
 require('./lib/wuziqi')(io, isset, getTime);
 require('./lib/pencil')(io, isset, getTime);
+require('./lib/zhanqi1')(io, isset, getTime);
+
