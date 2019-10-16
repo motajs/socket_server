@@ -3,6 +3,7 @@
 *\[z*\]*/*
 node_modules
 log.txt
+logs/
 .vscode
 
 

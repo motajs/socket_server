@@ -1,5 +1,7 @@
-var socketIO = require('socket.io');
-var fs = require('fs');
+const socketIO = require('socket.io');
+const fs = require('fs');
+const winston = require('winston');
+require('winston-daily-rotate-file');
 
 var server = null;
 
@@ -14,10 +16,20 @@ else {
     server = require('http').createServer();
 }
 
-var io = socketIO(server);
+const io = socketIO(server);
 
 server.listen(5050, function () {
     log(getTime()+'Starting server on port 5050');
+});
+
+const transport = new (winston.transports.DailyRotateFile)({
+    filename: '%DATE%.log',
+    dirname: 'logs/'
+});
+
+const logger = winston.createLogger({
+    format: winston.format.simple(),
+    transports: [transport]
 });
 
 function getTime() {
@@ -27,7 +39,7 @@ function getTime() {
 }
 
 function log(msg) {
-    console.log(msg);
+    logger.info(msg);
 };
 
 var _module = function (name) {
