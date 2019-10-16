@@ -17,25 +17,23 @@ else {
 var io = socketIO(server);
 
 server.listen(5050, function () {
-    console.log(getTime()+'Starting server on port 5050');
+    log(getTime()+'Starting server on port 5050');
 });
 
-var isset = function (t) {
-    if (t == undefined || t == null || (typeof t == "number" && isNaN(t)))
-        return false;
-    return true;
-}
-
-var getTime = function() {
+function getTime() {
     var date = new Date();
-    var setTwoDigits = function(x) {return parseInt(x)<10?("0"+x):x;}
-    return "[" + 
-        date.getFullYear()+"-"+setTwoDigits(date.getMonth()+1)+"-"+setTwoDigits(date.getDate())+" "
-        +setTwoDigits(date.getHours())+":"+setTwoDigits(date.getMinutes())+":"+setTwoDigits(date.getSeconds())+
-    "] ";
+    var isoString = new Date(date.getTime() - (date.getTimezoneOffset() * 60000)).toISOString().replace(/T/, ' ').replace(/\..+/, '');
+    return "["+ isoString + "] ";
 }
 
-require('./lib/wuziqi')(io, isset, getTime);
-require('./lib/pencil')(io, isset, getTime);
-require('./lib/zhanqi1')(io, isset, getTime);
+function log(msg) {
+    console.log(msg);
+};
 
+var _module = function (name) {
+    require('./lib/'+name)(io, name, msg => log(name + " " + getTime() + ": " + msg));
+}
+
+_module('wuziqi');
+_module('pencil');
+_module('zhanqi1');
