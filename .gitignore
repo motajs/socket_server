@@ -6,6 +6,7 @@ log.txt
 logs/
 .vscode
 rooms.txt
+rooms/
 records/
 
 # =========================
