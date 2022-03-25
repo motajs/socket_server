@@ -5,10 +5,13 @@ require('winston-daily-rotate-file');
 
 var server = null;
 
-if (fs.existsSync('/etc/letsencrypt/live/h5mota.com/privkey.pem')) {
+const key = "/etc/letsencrypt/live/h5mota.com/privkey.pem";
+const cert = "/etc/letsencrypt/live/h5mota.com/cert.pem";
+
+if (fs.existsSync(key)) {
     var options = {
-        key: fs.readFileSync('/etc/letsencrypt/live/h5mota.com/privkey.pem'),
-        cert: fs.readFileSync('/etc/letsencrypt/live/h5mota.com/fullchain.pem')
+        key: fs.readFileSync(key),
+        cert: fs.readFileSync(cert)
     }
     server = require('https').createServer(options);
 }
@@ -49,3 +52,4 @@ var _module = function (name) {
 _module('wuziqi');
 _module('pencil');
 _module('zhanqi1');
+_module('MTWar');
