@@ -2,9 +2,9 @@
     "name": "socket_server",
     "version": "1.0.0",
     "description": "Socket Server",
-    "main": "server.js",
+    "main": "server.mjs",
     "scripts": {
-        "test": "node server.js"
+        "test": "node server.mjs"
     },
     "repository": {
         "type": "git",
@@ -12,12 +12,9 @@
     },
     "license": "WTFPL",
     "dependencies": {
-        "request": "^2.88.2",
-        "socket.io": "^2.4.1",
+        "axios": "^0.26.1",
+        "socket.io": "^4.4.1",
         "winston": "^3.6.0",
         "winston-daily-rotate-file": "^4.6.1"
-    },
-    "devDependencies": {
-        "@types/socket.io": "^3.0.2"
     }
 }
